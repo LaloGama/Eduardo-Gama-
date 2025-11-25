@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería de Portafolio — Eduardo Gama</title>
+
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Galería de Portafolio — Eduardo Gama</title>
+
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --bg-alt: #ffffff;
+      --text: #111111;
+      --muted: #777777;
+      --accent: #111111;
+      --radius: 18px;
+      --max-width: 1120px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    main {
+      max-width: var(--max-width);
+      margin: 32px auto 40px;
+      padding: 0 16px 40px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      gap: 12px;
+    }
+
+    .top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .tag {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .title-main {
+      font-size: clamp(22px, 3vw, 26px);
+      font-weight: 600;
+    }
+
+    .back-link {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: var(--bg-alt);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+    }
+
+    .back-link span {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .back-link:hover {
+      background: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    /* LAYOUT PRINCIPAL */
+    .layout-gallery {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); /* imagen protagonista */
+      gap: 44px;
+      align-items: flex-start;
+    }
+
+    /* PANEL IZQUIERDO: IMAGEN + THUMBS */
+    .panel-image {
+      background: var(--bg-alt);
+      border-radius: 26px;
+      padding: 22px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .main-image-wrapper {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #111;
+      min-height: 560px;      /* grande */
+      max-height: 70vh;       /* se adapta a la pantalla */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .main-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 11px;
+    }
+
+    /* FLECHAS CARRUSEL GRANDES */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.4);
+      cursor: pointer;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .carousel-nav:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-50%) scale(1.08);
+    }
+
+    .carousel-prev { left: 10px; }
+    .carousel-next { right: 10px; }
+
+    /* Thumbnails */
+    .thumb-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 2px;
+      scrollbar-width: thin;
+    }
+
+    .thumb-row::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .thumb-row::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.22);
+      border-radius: 999px;
+    }
+
+    .thumb {
+      flex: 0 0 160px; /* más grandes */
+      height: 110px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #e5e5e5;
+      border: 2px solid transparent;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: border .15s ease, opacity .15s ease, transform .15s ease;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-active {
+      border-color: var(--accent);
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+
+    /* PANEL DERECHO: INFO DE PROYECTO */
+    .panel-info {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .project-title {
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    .project-sub {
+      font-size: 16px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tag-pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: #fafafa;
+      color: var(--muted);
+    }
+
+    .project-text {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .project-text p {
+      margin-bottom: 6px;
+    }
+
+    .project-text ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 4px;
+    }
+
+    .project-text li {
+      position: relative;
+      padding-left: 14px;
+      margin-bottom: 4px;
+    }
+
+    .project-text li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 2px;
+    }
+
+    .meta-value {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .link-row {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-ghost {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.14);
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+    }
+
+    .btn-ghost:hover {
+      background: #f7f7f7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+
+    .btn-ghost span {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    footer {
+      max-width: var(--max-width);
+      margin: 32px auto 20px;
+      padding: 0 16px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 880px) {
+      .layout-gallery {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-image {
+        order: -1;
+      }
+
+      .main-image-wrapper {
+        min-height: 260px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <header class="top-bar">
+      <div class="top-left">
+        <div class="tag">Portafolio</div>
+        <h1 class="title-main">Galería de proyectos</h1>
+      </div>
+      <a href="index.html" class="back-link">
+        <span>←</span> Volver al CV
+      </a>
+    </header>
+
+    <section class="layout-gallery">
+      <!-- IZQUIERDA: CARRUSEL -->
+      <div class="panel-image">
+        <div class="main-image-wrapper">
+          <div class="badge" id="badge-role"></div>
+          <button class="carousel-nav carousel-prev" type="button" id="btn-prev" aria-label="Proyecto anterior">‹</button>
+          <img id="main-image" src="" alt="Proyecto" />
+          <button class="carousel-nav carousel-next" type="button" id="btn-next" aria-label="Proyecto siguiente">›</button>
+        </div>
+
+        <div class="thumb-row" id="thumb-row">
+          <!-- Thumbs generados por JS -->
+        </div>
+      </div>
+
+      <!-- DERECHA: INFO -->
+      <article class="panel-info">
+        <div>
+          <h2 class="project-title" id="project-title"></h2>
+          <p class="project-sub" id="project-sub"></p>
+
+          <div class="tag-list" id="project-tags"></div>
+        </div>
+
+        <div class="project-text" id="project-text"></div>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-label">Año</div>
+            <div class="meta-value" id="meta-year"></div>
+          </div>
+          <div>
+            <div class="meta-label">Rol</div>
+            <div class="meta-value" id="meta-role"></div>
+          </div>
+          <div>
+            <div class="meta-label">Tipo</div>
+            <div class="meta-value" id="meta-type"></div>
+          </div>
+          <div>
+            <div class="meta-label">Contexto</div>
+            <div class="meta-value" id="meta-context"></div>
+          </div>
+        </div>
+
+        <div class="link-row" id="project-links">
+          <!-- Links opcionales -->
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> Eduardo Gama.</span>
+    <span>Galería UX/UI · Case studies seleccionados.</span>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Datos de proyectos
+    const projects = [
+      {
+        id: "regalus-dashboard",
+        title: "Dashboard RegALUS · UX/UI",
+        sub: "Plataforma de recompensas B2B2C",
+        roleBadge: "Producto · Design System",
+        year: "2023–2025",
+        role: "Head of UX/UI · Product Designer",
+        type: "Ecommerce / Lealtad",
+        context: "Plataforma RegALUS",
+        image: "img/regalus-dashboard.jpg",
+        tags: ["Producto", "Design System", "Ecommerce / Lealtad"],
+        descriptionHTML: `
+          <p>Vista de dashboard para la plataforma de recompensas RegALUS, diseñada para dar claridad a KPIs clave, puntos y acciones rápidas de los usuarios.</p>
+          <ul>
+            <li>Definición de jerarquía visual para métricas principales.</li>
+            <li>Uso de componentes reutilizables del sistema de diseño.</li>
+            <li>Versión responsive pensada para desktop y tablet.</li>
+          </ul>
+        `,
+        links: []
+      },
+      {
+        id: "chile-morita-web",
+        title: "Chile Morita · Website",
+        sub: "Estudio creativo integral",
+        roleBadge: "Web · Branding",
+        year: "2024",
+        role: "UX/UI & Branding",
+        type: "Sitio web · Servicios",
+        context: "Chile Morita",
+        image: "img/chile-morita-web.jpg",
+        tags: ["Web", "Branding", "Estudio creativo"],
+        descriptionHTML: `
+          <p>Sitio web para Chile Morita con foco en claridad de servicios, tono cercano y presentación visual de proyectos.</p>
+          <ul>
+            <li>Arquitectura de información simple y clara.</li>
+            <li>Diseño visual alineado con la identidad de marca.</li>
+            <li>Preparado para futuras secciones de portafolio y blog.</li>
+          </ul>
+        `,
+        links: []
+      },
+      {
+        id: "mailings-dark",
+        title: "Mailings transaccionales",
+        sub: "Sistema de correos para RegALUS",
+        roleBadge: "HTML · Dark Mode",
+        year: "2024",
+        role: "UX/UI · Email design",
+        type: "Mailings transaccionales",
+        context: "RegALUS",
+        image: "img/mailings-dark-mode.jpg",
+        tags: ["HTML", "Dark Mode", "Producto"],
+        descriptionHTML: `
+          <p>Sistema de mailings transaccionales unificados para plataformas RegALUS, con soporte a modo oscuro.</p>
+          <ul>
+            <li>Plantillas modulares para distintos tipos de notificación.</li>
+            <li>Optimización responsive y compatibilidad con clientes de correo.</li>
+            <li>Reducción de errores y tiempos de implementación desde diseño.</li>
+          </ul>
+        `,
+        links: []
+      },
+      {
+        id: "mobile-ui",
+        title: "Mobile UI — Componentes",
+        sub: "App de canje de puntos",
+        roleBadge: "UI · Mobile",
+        year: "2023–2024",
+        role: "UI Designer",
+        type: "Design System Mobile",
+        context: "App RegALUS",
+        image: "img/ui-mobile.jpg",
+        tags: ["UI", "Mobile", "Design System"],
+        descriptionHTML: `
+          <p>Set de componentes mobile alineados al sistema de diseño general de la plataforma.</p>
+          <ul>
+            <li>Componentes escalables listos para desarrollo.</li>
+            <li>Estados definidos (hover, disabled, error, loading).</li>
+            <li>Enfoque en legibilidad y accesibilidad básica.</li>
+          </ul>
+        `,
+        links: []
+      }
+    ];
+
+    const mainImage = document.getElementById("main-image");
+    const badgeRole = document.getElementById("badge-role");
+    const titleEl = document.getElementById("project-title");
+    const subEl = document.getElementById("project-sub");
+    const tagsWrap = document.getElementById("project-tags");
+    const textEl = document.getElementById("project-text");
+    const yearEl = document.getElementById("meta-year");
+    const roleEl = document.getElementById("meta-role");
+    const typeEl = document.getElementById("meta-type");
+    const ctxEl = document.getElementById("meta-context");
+    const linksWrap = document.getElementById("project-links");
+    const thumbRow = document.getElementById("thumb-row");
+
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+
+    let currentIndex = 0;
+
+    // Crear thumbs
+    projects.forEach((project, index) => {
+      const div = document.createElement("button");
+      div.className = "thumb";
+      div.setAttribute("type", "button");
+      div.dataset.index = index;
+
+      const img = document.createElement("img");
+      img.src = project.image;
+      img.alt = project.title;
+
+      div.appendChild(img);
+      thumbRow.appendChild(div);
+    });
+
+    function renderProject(index) {
+      const project = projects[index];
+      if (!project) return;
+
+      currentIndex = index;
+
+      mainImage.src = project.image;
+      mainImage.alt = project.title;
+      badgeRole.textContent = project.roleBadge || "";
+
+      titleEl.textContent = project.title;
+      subEl.textContent = project.sub || "";
+
+      tagsWrap.innerHTML = "";
+      (project.tags || []).forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag-pill";
+        span.textContent = tag;
+        tagsWrap.appendChild(span);
+      });
+
+      textEl.innerHTML = project.descriptionHTML || "";
+
+      yearEl.textContent = project.year || "—";
+      roleEl.textContent = project.role || "—";
+      typeEl.textContent = project.type || "—";
+      ctxEl.textContent = project.context || "—";
+
+      linksWrap.innerHTML = "";
+      (project.links || []).forEach(link => {
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.target = "_blank";
+        a.className = "btn-ghost";
+        a.innerHTML = `<span>↗</span>${link.label}`;
+        linksWrap.appendChild(a);
+      });
+
+      document.querySelectorAll(".thumb").forEach(el => {
+        el.classList.toggle("thumb-active", Number(el.dataset.index) === index);
+      });
+    }
+
+    function showNext() {
+      const next = (currentIndex + 1) % projects.length;
+      renderProject(next);
+    }
+
+    function showPrev() {
+      const prev = (currentIndex - 1 + projects.length) % projects.length;
+      renderProject(prev);
+    }
+
+    btnNext.addEventListener("click", showNext);
+    btnPrev.addEventListener("click", showPrev);
+
+    thumbRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".thumb");
+      if (!btn) return;
+      const index = Number(btn.dataset.index);
+      renderProject(index);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") showNext();
+      if (e.key === "ArrowLeft") showPrev();
+    });
+
+    // Inicial
+    renderProject(0);
+  </script>
+
+</body>
+</html>
+
+</head>
+<body>
+
+  <main>
+    <header class="top-bar">
+      <div class="top-left">
+        <div class="tag">Portafolio</div>
+        <h1 class="title-main">Galería de proyectos</h1>
+      </div>
+      <a href="index.html" class="back-link">
+        <span>←</span> Volver al CV
+      </a>
+    </header>
+
+    <section class="layout-gallery">
+      <!-- IZQUIERDA: CARRUSEL -->
+      <div class="panel-image">
+        <div class="main-image-wrapper">
+          <div class="badge" id="badge-role"></div>
+          <button class="carousel-nav carousel-prev" type="button" id="btn-prev" aria-label="Proyecto anterior">‹</button>
+          <img id="main-image" src="" alt="Proyecto" />
+          <button class="carousel-nav carousel-next" type="button" id="btn-next" aria-label="Proyecto siguiente">›</button>
+        </div>
+
+        <div class="thumb-row" id="thumb-row">
+          <!-- Thumbs generados por JS -->
+        </div>
+      </div>
+
+      <!-- DERECHA: INFO -->
+      <article class="panel-info">
+        <div>
+          <h2 class="project-title" id="project-title"></h2>
+          <p class="project-sub" id="project-sub"></p>
+
+          <div class="tag-list" id="project-tags"></div>
+        </div>
+
+        <div class="project-text" id="project-text"></div>
+
+        <div class="meta-grid">
+          <div>
+            <div class="meta-label">Año</div>
+            <div class="meta-value" id="meta-year"></div>
+          </div>
+          <div>
+            <div class="meta-label">Rol</div>
+            <div class="meta-value" id="meta-role"></div>
+          </div>
+          <div>
+            <div class="meta-label">Tipo</div>
+            <div class="meta-value" id="meta-type"></div>
+          </div>
+          <div>
+            <div class="meta-label">Contexto</div>
+            <div class="meta-value" id="meta-context"></div>
+          </div>
+        </div>
+
+        <div class="link-row" id="project-links">
+          <!-- Links opcionales (behance, figma, live) -->
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> Eduardo Gama.</span>
+    <span>Galería UX/UI · Case studies seleccionados.</span>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Datos de proyectos (puedes editar/añadir más)
+    const projects = [
+      {
+        id: "regalus-dashboard",
+        title: "Dashboard RegALUS · UX/UI",
+        sub: "Plataforma de recompensas B2B2C",
+        roleBadge: "Producto · Design System",
+        year: "2023–2025",
+        role: "Head of UX/UI · Product Designer",
+        type: "Ecommerce / Lealtad",
+        context: "Plataforma RegALUS",
+        image: "img/regalus-dashboard.jpg",
+        tags: ["Producto", "Design System", "Ecommerce / Lealtad"],
+        descriptionHTML: `
+          <p>Vista de dashboard para la plataforma de recompensas RegALUS, diseñada para dar claridad a KPIs clave, puntos y acciones rápidas de los usuarios.</p>
+          <ul>
+            <li>Definición de jerarquía visual para métricas principales.</li>
+            <li>Uso de componentes reutilizables del sistema de diseño.</li>
+            <li>Versión responsive pensada para desktop y tablet.</li>
+          </ul>
+        `,
+        links: [
+          // { label: "Ver prototipo en Figma", href: "#" },
+          // { label: "Behance", href: "#" }
+        ]
+      },
+      {
+        id: "chile-morita-web",
+        title: "Chile Morita · Website",
+        sub: "Estudio creativo integral",
+        roleBadge: "Web · Branding",
+        year: "2024",
+        role: "UX/UI & Branding",
+        type: "Sitio web · Servicios",
+        context: "Chile Morita",
+        image: "img/chile-morita-web.jpg",
+        tags: ["Web", "Branding", "Estudio creativo"],
+        descriptionHTML: `
+          <p>Sitio web para Chile Morita con foco en claridad de servicios, tono cercano y presentación visual de proyectos.</p>
+          <ul>
+            <li>Arquitectura de información simple y clara.</li>
+            <li>Diseño visual alineado con la identidad de marca.</li>
+            <li>Preparado para futuras secciones de portafolio y blog.</li>
+          </ul>
+        `,
+        links: []
+      },
+      {
+        id: "mailings-dark",
+        title: "Mailings transaccionales",
+        sub: "Sistema de correos para RegALUS",
+        roleBadge: "HTML · Dark Mode",
+        year: "2024",
+        role: "UX/UI · Email design",
+        type: "Mailings transaccionales",
+        context: "RegALUS",
+        image: "img/mailings-dark-mode.jpg",
+        tags: ["HTML", "Dark Mode", "Producto"],
+        descriptionHTML: `
+          <p>Sistema de mailings transaccionales unificados para plataformas RegALUS, con soporte a modo oscuro.</p>
+          <ul>
+            <li>Plantillas modulares para distintos tipos de notificación.</li>
+            <li>Optimización responsive y compatibilidad con clientes de correo.</li>
+            <li>Reducción de errores y tiempos de implementación desde diseño.</li>
+          </ul>
+        `,
+        links: []
+      },
+      {
+        id: "mobile-ui",
+        title: "Mobile UI — Componentes",
+        sub: "App de canje de puntos",
+        roleBadge: "UI · Mobile",
+        year: "2023–2024",
+        role: "UI Designer",
+        type: "Design System Mobile",
+        context: "App RegALUS",
+        image: "img/ui-mobile.jpg",
+        tags: ["UI", "Mobile", "Design System"],
+        descriptionHTML: `
+          <p>Set de componentes mobile alineados al sistema de diseño general de la plataforma.</p>
+          <ul>
+            <li>Componentes escalables listos para desarrollo.</li>
+            <li>Estados definidos (hover, disabled, error, loading).</li>
+            <li>Enfoque en legibilidad y accesibilidad básica.</li>
+          </ul>
+        `,
+        links: []
+      }
+    ];
+
+    const mainImage = document.getElementById("main-image");
+    const badgeRole = document.getElementById("badge-role");
+    const titleEl = document.getElementById("project-title");
+    const subEl = document.getElementById("project-sub");
+    const tagsWrap = document.getElementById("project-tags");
+    const textEl = document.getElementById("project-text");
+    const yearEl = document.getElementById("meta-year");
+    const roleEl = document.getElementById("meta-role");
+    const typeEl = document.getElementById("meta-type");
+    const ctxEl = document.getElementById("meta-context");
+    const linksWrap = document.getElementById("project-links");
+    const thumbRow = document.getElementById("thumb-row");
+
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+
+    let currentIndex = 0;
+
+    // Crear thumbs
+    projects.forEach((project, index) => {
+      const div = document.createElement("button");
+      div.className = "thumb";
+      div.setAttribute("type", "button");
+      div.dataset.index = index;
+
+      const img = document.createElement("img");
+      img.src = project.image;
+      img.alt = project.title;
+
+      div.appendChild(img);
+      thumbRow.appendChild(div);
+    });
+
+    function renderProject(index) {
+      const project = projects[index];
+      if (!project) return;
+
+      currentIndex = index;
+
+      mainImage.src = project.image;
+      mainImage.alt = project.title;
+      badgeRole.textContent = project.roleBadge || "";
+
+      titleEl.textContent = project.title;
+      subEl.textContent = project.sub || "";
+
+      tagsWrap.innerHTML = "";
+      (project.tags || []).forEach(tag => {
+        const span = document.createElement("span");
+        span.className = "tag-pill";
+        span.textContent = tag;
+        tagsWrap.appendChild(span);
+      });
+
+      textEl.innerHTML = project.descriptionHTML || "";
+
+      yearEl.textContent = project.year || "—";
+      roleEl.textContent = project.role || "—";
+      typeEl.textContent = project.type || "—";
+      ctxEl.textContent = project.context || "—";
+
+      linksWrap.innerHTML = "";
+      (project.links || []).forEach(link => {
+        const a = document.createElement("a");
+        a.href = link.href;
+        a.target = "_blank";
+        a.className = "btn-ghost";
+        a.innerHTML = `<span>↗</span>${link.label}`;
+        linksWrap.appendChild(a);
+      });
+
+      // marcar thumb activa
+      document.querySelectorAll(".thumb").forEach(el => {
+        el.classList.toggle("thumb-active", Number(el.dataset.index) === index);
+      });
+    }
+
+    function showNext() {
+      const next = (currentIndex + 1) % projects.length;
+      renderProject(next);
+    }
+
+    function showPrev() {
+      const prev = (currentIndex - 1 + projects.length) % projects.length;
+      renderProject(prev);
+    }
+
+    btnNext.addEventListener("click", showNext);
+    btnPrev.addEventListener("click", showPrev);
+
+    thumbRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".thumb");
+      if (!btn) return;
+      const index = Number(btn.dataset.index);
+      renderProject(index);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") showNext();
+      if (e.key === "ArrowLeft") showPrev();
+    });
+
+    // Render inicial
+    renderProject(0);
+  </script>
+
+</body>
+</html>
